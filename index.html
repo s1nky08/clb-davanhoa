@@ -5,6 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shikanoko Nokonoko Koshitantan - Interactive</title>
     <style>
+        /* Tên nhân vật */
+.char-name{
+    position:absolute;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 2.2vw;
+    color:white;
+    pointer-events:none;
+    text-shadow:
+        0 0 6px currentColor,
+        0 0 12px currentColor,
+        0 0 20px currentColor;
+}
+
+/* Vị trí từng tên */
+.name-4{
+    top:55%;
+    left:8%;
+    color:#4DB34D; /* xanh lá */
+}
+
+.name-3{
+    top:45%;
+    left:27%;
+    color:#b66cff; /* tím */
+}
+
+.name-2{
+    top:30%;
+    left:38%;
+    color:#CCCC33; /* vàng */
+}
+
+.name-1{
+    top:12%;
+    left:75%;
+    color:#8b5a3c; /* nâu */
+}
         /* Đặt lại lề mặc định */
         body {
             margin: 0;
@@ -89,24 +127,29 @@
     </style>
 </head>
 <body>
+</a>
 
     <div class="shikanoko-container">
         <img src="anh_nen.png" class="bg-layer" alt="Background">
 
         <a href="https://www.facebook.com/hoangganh0106/" target="_blank" class="char-link char-4">
             <img src="anh_nv_4.png" alt="Nhân vật 4">
+            <span class="char-name name-4">Shika</span>
         </a>
 
         <a href="https://www.facebook.com/share/14WGHKYgCyr/" target="_blank" class="char-link char-3">
             <img src="anh_nv_3.png" alt="Nhân vật 3">
+            <span class="char-name name-3">Kuro</span>
         </a>
 
         <a href="https://www.facebook.com/ca.lang.sau/" target="_blank" class="char-link char-2">
             <img src="anh_nv_2.png" alt="Nhân vật 2">
+            <span class="char-name name-2">Calangdu</span>
         </a>
 
         <a href="https://www.facebook.com/ito.haruno.2024" target="_blank" class="char-link char-1">
             <img src="anh_nv_1.png" alt="Nhân vật 1">
+            <span class="char-name name-1">Haru</span>
         </a>
     </div>
 
