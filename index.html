@@ -3,121 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shikanoko Nokonoko Koshitantan - Fixed</title>
+    <title>CLB-DaVanHoa</title>
     <style>
-        /* Tên nhân vật */
-        .char-name {
-            position: absolute;
-            font-family: Arial, sans-serif;
-            font-weight: bold;
-            font-size: 2.2vw;
-            color: white;
-            pointer-events: none;
-            z-index: 150; /* Cho tên lên trên cùng */
-            text-shadow: 0 0 6px currentColor, 0 0 12px currentColor, 0 0 20px currentColor;
+        /* =======================================================
+           1. THAY ĐỔI HÌNH ẢNH CON TRỎ CHUỘT 
+           ======================================================= */
+        body {
+            margin: 0; 
+            padding: 40px 20px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: flex-start; 
+            align-items: center;
+            min-height: 100vh; 
+            background-image: url('anh_nen_moi.jpg'); /* Thay 'anh_nen.png' bằng tên file ảnh nền bạn muốn dùng */
+            background-size: cover;
+            gap: 40px; 
+            
+            /* Đổi con trỏ mặc định toàn trang */
+            /* Thay 'anh_chuot.png' bằng tên file ảnh bạn muốn dùng */
+            cursor: url('anh_chuot.png'), auto; 
         }
 
+        /* Đổi luôn con trỏ khi di chuột vào vùng click của nhân vật */
+        .zone { 
+            flex: 1; 
+            height: 100%; 
+            /* Bạn có thể đổi sang ảnh khác (ví dụ bàn tay chỉ) khi hover link, 
+               hoặc giữ nguyên ảnh chuột mặc định ở trên */
+            cursor: url('anh_chuot.png'), pointer; 
+        }
+
+        /* =======================================================
+           2. HIỆU ỨNG NGÔI SAO RƠI (CSS)
+           ======================================================= */
+        .magic-star {
+            position: absolute;
+            pointer-events: none; /* RẤT QUAN TRỌNG: Để sao không cản trở click */
+            z-index: 9999; /* Luôn nổi trên cùng */
+            color: #FFCC00; /* Màu vàng của sao */
+            font-size: 18px;
+            text-shadow: 0 0 5px #FFFFAA; /* Hiệu ứng phát sáng nhẹ */
+            animation: fallAnimation 0.8s linear forwards;
+        }
+
+        @keyframes fallAnimation {
+            0% {
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                /* Rơi xuống 60px, thu nhỏ lại và xoay */
+                transform: translate(-50%, 60px) scale(0) rotate(90deg);
+                opacity: 0;
+            }
+        }
+
+        /* =======================================================
+           (GIỮ NGUYÊN CSS CŨ CỦA BẠN)
+           ======================================================= */
+        .char-name {
+            position: absolute; font-family: Arial, sans-serif;
+            font-weight: bold; font-size: 2.8vw; color: white;
+            pointer-events: none; z-index: 150; 
+            text-shadow: 0 0 6px currentColor, 0 0 12px currentColor, 0 0 20px currentColor;
+        }
         .name-4 { top: 55%; left: 8%; color: #4DB34D; }
         .name-3 { top: 45%; left: 27%; color: #b66cff; }
         .name-2 { top: 30%; left: 38%; color: #CCCC33; }
         .name-1 { top: 12%; left: 75%; color: #8b5a3c; }
 
-        body {
-            margin: 0; 
-            padding: 40px 20px; /* Thêm padding để nội dung không sát mép màn hình */
-            display: flex; 
-            flex-direction: column; /* Chuyển flex thành cột để văn bản nằm dưới ảnh */
-            justify-content: flex-start; /* Bắt đầu từ trên xuống để dễ cuộn */
-            align-items: center;
-            min-height: 100vh; 
-            background-color: #FFFFCC; /* Đã đổi màu nền phía sau */
-            gap: 40px; /* Khoảng cách giữa ảnh và khung chữ */
-        }
-
         .shikanoko-container {
-            position: relative;
-            width: 100%; max-width: 1000px;
+            position: relative; width: 100%; max-width: 1000px;
             aspect-ratio: 1.41; overflow: hidden;
             border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             flex-shrink: 0;
         }
-
         .bg-layer { width: 100%; display: block; }
-
-        /* Các lớp nhân vật */
         .char-link {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: block;
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            z-index: 10;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: block; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); z-index: 10;
         }
-
-        .char-link img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            transition: all 0.4s ease;
-        }
-
-        /* 1. HIỆU ỨNG KHI RÊ CHUỘT VÀO CONTAINER */
+        .char-link img { width: 100%; height: 100%; object-fit: cover; transition: all 0.4s ease; }
         .shikanoko-container:hover .char-link { opacity: 0.4; }
-
-        /* 2. KHU VỰC CẢM ỨNG (TOUCH ZONES) */
-        .touch-zones {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: flex;
-            z-index: 200; /* Nằm trên cùng để nhận chuột */
-        }
-        .zone { flex: 1; height: 100%; cursor: pointer; }
-
-        /* 3. ĐIỀU KHIỂN HIỆU ỨNG NỔI LÊN QUA ZONE */
+        .touch-zones { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; z-index: 200; }
         
-        /* Khi hover vào Zone, ép nhân vật tương ứng nổi lên */
         .shikanoko-container:has(.zone-4:hover) .char-4,
         .shikanoko-container:has(.zone-3:hover) .char-3,
         .shikanoko-container:has(.zone-2:hover) .char-2,
         .shikanoko-container:has(.zone-1:hover) .char-1 {
-            opacity: 1 !important;
-            z-index: 100 !important;
-            transform: scale(1.05);
+            opacity: 1 !important; z-index: 100 !important; transform: scale(1.05);
         }
-
-        /* Thêm bóng đổ cho ảnh khi nổi lên */
         .shikanoko-container:has(.zone-4:hover) .char-4 img,
         .shikanoko-container:has(.zone-3:hover) .char-3 img,
         .shikanoko-container:has(.zone-2:hover) .char-2 img,
         .shikanoko-container:has(.zone-1:hover) .char-1 img {
             filter: drop-shadow(0px 15px 15px rgba(0,0,0,0.4)) brightness(1.1);
         }
-
-        /* Tùy chỉnh gốc phóng to */
         .char-4 { transform-origin: left bottom; }
         .char-3 { transform-origin: 30% bottom; }
         .char-2 { transform-origin: 50% bottom; }
         .char-1 { transform-origin: right bottom; }
 
-        /* KHUNG THÔNG TIN CÂU LẠC BỘ */
         .club-info {
-            background-color: #FFFF80;
-            padding: 30px;
-            border-radius: 20px; /* Bo tròn các góc */
-            text-align: center;
-            max-width: 800px;
-            width: 90%;
-            font-family: Arial, sans-serif;
-            font-size: 1.2rem;
-            line-height: 1.6;
-            color: #333;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            background-color: #FFFF80; padding: 30px; border-radius: 20px; 
+            text-align: center; max-width: 800px; width: 90%;
+            font-family: Arial, sans-serif; font-size: 1.2rem; line-height: 1.6;
+            color: #333; box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
-        
-        .club-info strong {
-            display: block;
-            font-size: 1.4rem;
-            margin-bottom: 10px;
-        }
-
+        .club-info strong { display: block; font-size: 1.4rem; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -138,17 +132,14 @@
             <img src="anh_nv_4.png" alt="Nhân vật 4">
             <span class="char-name name-4">Shika</span>
         </div>
-
         <div class="char-link char-3">
             <img src="anh_nv_3.png" alt="Nhân vật 3">
             <span class="char-name name-3">Kuro</span>
         </div>
-
         <div class="char-link char-2">
             <img src="anh_nv_2.png" alt="Nhân vật 2">
             <span class="char-name name-2">Calangdu</span>
         </div>
-
         <div class="char-link char-1">
             <img src="anh_nv_1.png" alt="Nhân vật 1">
             <span class="char-name name-1">Haru</span>
@@ -161,30 +152,51 @@
     </div>
 
     <script>
+        // ==========================================
+        // SCRIPT NHẠC NỀN (Giữ nguyên của bạn)
+        // ==========================================
         const audio = document.getElementById('bg-music');
-
-        // Hàm thử tự động phát nhạc
         function playAudio() {
             audio.play().catch(error => {
                 console.log("Trình duyệt chặn autoplay. Nhạc sẽ phát khi người dùng tương tác với trang.");
             });
         }
-
-        // Cố gắng phát nhạc ngay khi load xong
         window.addEventListener('load', playAudio);
-
-        // Phát nhạc khi click bất kỳ đâu trên trang (nếu autoplay bị trình duyệt chặn)
         document.body.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play();
-            }
+            if (audio.paused) { audio.play(); }
         }, { once: true });
-
-        // Logic lặp lại nhạc sau 1 giây (1000ms) khi bài hát kết thúc
         audio.addEventListener('ended', () => {
+            setTimeout(() => { audio.play(); }, 1000);
+        });
+
+        // ==========================================
+        // SCRIPT TẠO SAO RƠI KHI DI CHUỘT
+        // ==========================================
+        let lastStarTime = 0;
+
+        document.addEventListener('mousemove', function(e) {
+            const now = Date.now();
+            // Giới hạn: Cách 40ms mới tạo ra 1 ngôi sao để tránh giật lag máy
+            if (now - lastStarTime < 40) return; 
+            lastStarTime = now;
+
+            // 1. Tạo một thẻ div chứa ngôi sao
+            const star = document.createElement('div');
+            star.classList.add('magic-star');
+            star.innerHTML = '✨'; // Bạn có thể đổi ký tự này thành ✦, ★, hoặc 🌸 tùy thích
+            
+            // 2. Đặt vị trí ngôi sao ngay tại mũi tên chuột
+            // Trừ đi một chút để ngôi sao xuất hiện đúng ở tâm chuột
+            star.style.left = (e.pageX - 1) + 'px';
+            star.style.top = (e.pageY - 1) + 'px';
+            
+            // 3. Thêm vào trang web
+            document.body.appendChild(star);
+            
+            // 4. Tự động dọn dẹp (xóa sao) sau 0.8 giây để không bị tràn bộ nhớ
             setTimeout(() => {
-                audio.play();
-            }, 1000);
+                star.remove();
+            }, 800);
         });
     </script>
 
