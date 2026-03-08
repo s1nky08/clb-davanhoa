@@ -3,122 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CLBDaVanHoa</title>
+    <title>Shikanoko Nokonoko Koshitantan - Fixed</title>
     <style>
         /* Tên nhân vật */
-.char-name{
-    position:absolute;
-    font-family: Arial, sans-serif;
-    font-weight: bold;
-    font-size: 2.2vw;
-    color:white;
-    pointer-events:none;
-    text-shadow:
-        0 0 6px currentColor,
-        0 0 12px currentColor,
-        0 0 20px currentColor;
-}
-
-/* Vị trí từng tên */
-.name-4{
-    top:55%;
-    left:8%;
-    color:#4DB34D; /* xanh lá */
-}
-
-.name-3{
-    top:45%;
-    left:27%;
-    color:#b66cff; /* tím */
-}
-
-.name-2{
-    top:30%;
-    left:38%;
-    color:#CCCC33; /* vàng */
-}
-
-.name-1{
-    top:12%;
-    left:75%;
-    color:#8b5a3c; /* nâu */
-}
-        /* Đặt lại lề mặc định */
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f0f0f0;
+        .char-name {
+            position: absolute;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            font-size: 2.2vw;
+            color: white;
+            pointer-events: none;
+            z-index: 150; /* Cho tên lên trên cùng */
+            text-shadow: 0 0 6px currentColor, 0 0 12px currentColor, 0 0 20px currentColor;
         }
 
-        /* Khung chứa toàn bộ ảnh, tự động co giãn theo màn hình nhưng tối đa 1000px */
+        .name-4 { top: 55%; left: 8%; color: #4DB34D; }
+        .name-3 { top: 45%; left: 27%; color: #b66cff; }
+        .name-2 { top: 30%; left: 38%; color: #CCCC33; }
+        .name-1 { top: 12%; left: 75%; color: #8b5a3c; }
+
+        body {
+            margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; background-color: #f0f0f0;
+        }
+
         .shikanoko-container {
             position: relative;
-            width: 100%;
-            max-width: 1000px;
-            aspect-ratio: 1.41; /* THÊM DÒNG NÀY ĐỂ CHỐNG XẸP (tỷ lệ chuẩn của ảnh gốc) */
-            overflow: hidden;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%; max-width: 1000px;
+            aspect-ratio: 1.41; overflow: hidden;
+            border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
-        /* Ảnh nền dưới cùng */
-        .bg-layer {
-            width: 100%;
-            display: block;
-        }
+        .bg-layer { width: 100%; display: block; }
 
-        /* Các lớp nhân vật nằm đè lên nhau */
+        /* Các lớp nhân vật */
         .char-link {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             display: block;
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Hiệu ứng chuyển động mượt */
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             z-index: 10;
         }
 
         .char-link img {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             object-fit: cover;
-            /* Dùng drop-shadow thay vì box-shadow để bóng đổ theo viền nhân vật đã tách nền */
-            filter: drop-shadow(0px 0px 0px rgba(0,0,0,0)); 
             transition: all 0.4s ease;
         }
 
-        /* HIỆU ỨNG: Khi di chuột vào container, làm mờ TẤT CẢ nhân vật đi một chút */
-        .shikanoko-container:hover .char-link {
-            opacity: 0.4;
+        /* 1. HIỆU ỨNG KHI RÊ CHUỘT VÀO CONTAINER */
+        .shikanoko-container:hover .char-link { opacity: 0.4; }
+
+        /* 2. KHU VỰC CẢM ỨNG (TOUCH ZONES) */
+        .touch-zones {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            z-index: 200; /* Nằm trên cùng để nhận chuột */
+        }
+        .zone { flex: 1; height: 100%; cursor: pointer; }
+
+        /* 3. ĐIỀU KHIỂN HIỆU ỨNG NỔI LÊN QUA ZONE */
+        
+        /* Khi hover vào Zone, ép nhân vật tương ứng nổi lên */
+        .shikanoko-container:has(.zone-4:hover) .char-4,
+        .shikanoko-container:has(.zone-3:hover) .char-3,
+        .shikanoko-container:has(.zone-2:hover) .char-2,
+        .shikanoko-container:has(.zone-1:hover) .char-1 {
+            opacity: 1 !important;
+            z-index: 100 !important;
+            transform: scale(1.05);
         }
 
-        /* HIỆU ỨNG: Nhân vật ĐANG ĐƯỢC DI CHUỘT sẽ sáng lên, to ra và rõ nét */
-        .shikanoko-container .char-link:hover {
-            opacity: 1;
-            z-index: 20; /* Nổi lên trên cùng */
-            transform: scale(1.05); /* Phóng to 5% */
+        /* Thêm bóng đổ cho ảnh khi nổi lên */
+        .shikanoko-container:has(.zone-4:hover) .char-4 img,
+        .shikanoko-container:has(.zone-3:hover) .char-3 img,
+        .shikanoko-container:has(.zone-2:hover) .char-2 img,
+        .shikanoko-container:has(.zone-1:hover) .char-1 img {
+            filter: drop-shadow(0px 15px 15px rgba(0,0,0,0.4)) brightness(1.1);
         }
 
-        .shikanoko-container .char-link:hover img {
-            filter: drop-shadow(0px 15px 15px rgba(0,0,0,0.4)) brightness(1.1); /* Tỏa sáng và đổ bóng */
-        }
-
-        /* * XỬ LÝ CHỒNG CHÉO (Quan trọng): 
-         * Vì các ảnh PNG của bạn có khung to bằng nhau, phần trong suốt có thể che mất nhau.
-         * Ta dùng clip-path để cắt vùng click (hover) ôm sát nhân vật hơn.
-         * Bạn có thể thay link Facebook ở thuộc tính href="" bên dưới mã HTML.
-         */
-        .char-4 { clip-path: polygon(0% 40%, 25% 40%, 25% 100%, 0% 100%); z-index: 14; }
-        .char-3 { clip-path: polygon(15% 30%, 40% 30%, 40% 100%, 15% 100%); z-index: 13; }
-        .char-2 { clip-path: polygon(35% 20%, 65% 20%, 65% 100%, 35% 100%); z-index: 12; }
-        .char-1 { clip-path: polygon(55% 0%, 100% 0%, 100% 100%, 55% 100%); z-index: 11; }
-
-        /* Tùy chỉnh tâm phóng to (Transform Origin) cho từng nhân vật để phóng tự nhiên hơn */
+        /* Tùy chỉnh gốc phóng to */
         .char-4 { transform-origin: left bottom; }
         .char-3 { transform-origin: 30% bottom; }
         .char-2 { transform-origin: 50% bottom; }
@@ -127,32 +93,37 @@
     </style>
 </head>
 <body>
-</a>
 
     <div class="shikanoko-container">
         <img src="anh_nen.png" class="bg-layer" alt="Background">
 
-        <a href="https://www.facebook.com/hoangganh0106/" target="_blank" class="char-link char-4">
+        <div class="touch-zones">
+            <div class="zone zone-4" onclick="window.open('https://www.facebook.com/hoangganh0106/', '_blank')"></div>
+            <div class="zone zone-3" onclick="window.open('https://www.facebook.com/share/14WGHKYgCyr/', '_blank')"></div>
+            <div class="zone zone-2" onclick="window.open('https://www.facebook.com/ca.lang.sau/', '_blank')"></div>
+            <div class="zone zone-1" onclick="window.open('https://www.facebook.com/ito.haruno.2024', '_blank')"></div>
+        </div>
+
+        <div class="char-link char-4">
             <img src="anh_nv_4.png" alt="Nhân vật 4">
             <span class="char-name name-4">Shika</span>
-        </a>
+        </div>
 
-        <a href="https://www.facebook.com/share/14WGHKYgCyr/" target="_blank" class="char-link char-3">
+        <div class="char-link char-3">
             <img src="anh_nv_3.png" alt="Nhân vật 3">
             <span class="char-name name-3">Kuro</span>
-        </a>
+        </div>
 
-        <a href="https://www.facebook.com/ca.lang.sau/" target="_blank" class="char-link char-2">
+        <div class="char-link char-2">
             <img src="anh_nv_2.png" alt="Nhân vật 2">
             <span class="char-name name-2">Calangdu</span>
-        </a>
+        </div>
 
-        <a href="https://www.facebook.com/ito.haruno.2024" target="_blank" class="char-link char-1">
+        <div class="char-link char-1">
             <img src="anh_nv_1.png" alt="Nhân vật 1">
             <span class="char-name name-1">Haru</span>
-        </a>
+        </div>
     </div>
 
 </body>
 </html>
-
