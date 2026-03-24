@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CLB-DaVanHoa</title>
     <style>
-        /* =======================================================
-           1. THAY ĐỔI HÌNH ẢNH CON TRỎ CHUỘT 
-           ======================================================= */
         body {
             margin: 0; 
             padding: 40px 20px; 
@@ -16,34 +13,26 @@
             justify-content: flex-start; 
             align-items: center;
             min-height: 100vh; 
-            background-image: url('anh_nen_moi.jpg'); /* Thay 'anh_nen.png' bằng tên file ảnh nền bạn muốn dùng */
+            background-image: url('anh_nen_moi.jpg'); 
             background-size: cover;
             gap: 40px; 
-            
-            /* Đổi con trỏ mặc định toàn trang */
-            /* Thay 'anh_chuot.png' bằng tên file ảnh bạn muốn dùng */
             cursor: url('anh_chuot.png'), auto; 
         }
 
-        /* Đổi luôn con trỏ khi di chuột vào vùng click của nhân vật */
         .zone { 
             flex: 1; 
             height: 100%; 
-            /* Bạn có thể đổi sang ảnh khác (ví dụ bàn tay chỉ) khi hover link, 
-               hoặc giữ nguyên ảnh chuột mặc định ở trên */
             cursor: url('anh_chuot.png'), pointer; 
         }
 
-        /* =======================================================
-           2. HIỆU ỨNG NGÔI SAO RƠI (CSS)
-           ======================================================= */
+        /* Effect sao rơi */
         .magic-star {
             position: absolute;
-            pointer-events: none; /* RẤT QUAN TRỌNG: Để sao không cản trở click */
-            z-index: 9999; /* Luôn nổi trên cùng */
-            color: #FFCC00; /* Màu vàng của sao */
+            pointer-events: none;
+            z-index: 9999; 
+            color: #FFCC00; 
             font-size: 18px;
-            text-shadow: 0 0 5px #FFFFAA; /* Hiệu ứng phát sáng nhẹ */
+            text-shadow: 0 0 5px #FFFFAA; 
             animation: fallAnimation 0.8s linear forwards;
         }
 
@@ -53,15 +42,11 @@
                 opacity: 1;
             }
             100% {
-                /* Rơi xuống 60px, thu nhỏ lại và xoay */
                 transform: translate(-50%, 60px) scale(0) rotate(90deg);
                 opacity: 0;
             }
         }
 
-        /* =======================================================
-           (GIỮ NGUYÊN CSS CŨ CỦA BẠN)
-           ======================================================= */
         .char-name {
             position: absolute; font-family: Arial, sans-serif;
             font-weight: bold; font-size: 2.8vw; color: white;
@@ -152,51 +137,39 @@
     </div>
 
     <script>
-        // ==========================================
-        // SCRIPT NHẠC NỀN (Giữ nguyên của bạn)
-        // ==========================================
+        // Xử lý Audio
         const audio = document.getElementById('bg-music');
-        function playAudio() {
-            audio.play().catch(error => {
-                console.log("Trình duyệt chặn autoplay. Nhạc sẽ phát khi người dùng tương tác với trang.");
-            });
-        }
-        window.addEventListener('load', playAudio);
-        document.body.addEventListener('click', () => {
-            if (audio.paused) { audio.play(); }
-        }, { once: true });
-        audio.addEventListener('ended', () => {
-            setTimeout(() => { audio.play(); }, 1000);
+        
+        window.addEventListener('load', () => {
+            audio.play().catch(() => console.log("Autoplay blocked"));
         });
 
-        // ==========================================
-        // SCRIPT TẠO SAO RƠI KHI DI CHUỘT
-        // ==========================================
-        let lastStarTime = 0;
+        document.body.addEventListener('click', () => {
+            if (audio.paused) audio.play();
+        }, { once: true });
+        
+        audio.addEventListener('ended', () => {
+            setTimeout(() => audio.play(), 1000);
+        });
 
-        document.addEventListener('mousemove', function(e) {
+        // Mouse trail effect
+        let lastStarTime = 0;
+        
+        document.addEventListener('mousemove', (e) => {
             const now = Date.now();
-            // Giới hạn: Cách 40ms mới tạo ra 1 ngôi sao để tránh giật lag máy
-            if (now - lastStarTime < 40) return; 
+            if (now - lastStarTime < 40) return; // throttle
             lastStarTime = now;
 
-            // 1. Tạo một thẻ div chứa ngôi sao
             const star = document.createElement('div');
-            star.classList.add('magic-star');
-            star.innerHTML = '✨'; // Bạn có thể đổi ký tự này thành ✦, ★, hoặc 🌸 tùy thích
+            star.className = 'magic-star';
+            star.innerHTML = '✨';
             
-            // 2. Đặt vị trí ngôi sao ngay tại mũi tên chuột
-            // Trừ đi một chút để ngôi sao xuất hiện đúng ở tâm chuột
-            star.style.left = (e.pageX - 1) + 'px';
-            star.style.top = (e.pageY - 1) + 'px';
+            star.style.left = `${e.pageX - 1}px`;
+            star.style.top = `${e.pageY - 1}px`;
             
-            // 3. Thêm vào trang web
             document.body.appendChild(star);
             
-            // 4. Tự động dọn dẹp (xóa sao) sau 0.8 giây để không bị tràn bộ nhớ
-            setTimeout(() => {
-                star.remove();
-            }, 800);
+            setTimeout(() => star.remove(), 800);
         });
     </script>
 
